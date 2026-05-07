@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{E2BA2D85-1CB5-41CC-B4B8-62FB79282751}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeLab.API", "backend\CodeLab.API\CodeLab.API.csproj", "{B9C7958B-E21A-4205-B290-D37B573208A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeLab.Tests", "backend\CodeLab.Tests\CodeLab.Tests.csproj", "{C0539113-8B82-42D8-B69D-7779A40BD6AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9C7958B-E21A-4205-B290-D37B573208A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C7958B-E21A-4205-B290-D37B573208A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C7958B-E21A-4205-B290-D37B573208A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C7958B-E21A-4205-B290-D37B573208A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0539113-8B82-42D8-B69D-7779A40BD6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0539113-8B82-42D8-B69D-7779A40BD6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0539113-8B82-42D8-B69D-7779A40BD6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0539113-8B82-42D8-B69D-7779A40BD6AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B9C7958B-E21A-4205-B290-D37B573208A2} = {E2BA2D85-1CB5-41CC-B4B8-62FB79282751}
+		{C0539113-8B82-42D8-B69D-7779A40BD6AD} = {E2BA2D85-1CB5-41CC-B4B8-62FB79282751}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,28 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.nupkg
+*.snupkg
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+
+# Angular
+node_modules/
+dist/
+.angular/
+*.js.map
+
+# Environment
+.env
+*.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker/mysql_data/

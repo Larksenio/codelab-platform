@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: codelab-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: codelab
+      MYSQL_USER: codelab
+      MYSQL_PASSWORD: codelab_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "codelab", "-pcodelab_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: CodeLab.API/Dockerfile
+    container_name: codelab-api
+    restart: unless-stopped
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=codelab;User=codelab;Password=codelab_pass;"
+      Jwt__Key: DEV_ONLY_SECRET_KEY_MINIMUM_32_CHARACTERS
+      Jwt__Issuer: CodeLabAPI
+      Jwt__Audience: CodeLabClient
+      Jwt__ExpiryHours: "24"
+      Frontend__Url: http://localhost:4200
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: codelab-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
