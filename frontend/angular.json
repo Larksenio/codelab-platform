@@ -29,6 +29,16 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min",
+                "output": "/assets/monaco-editor/min"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min-maps",
+                "output": "/assets/monaco-editor/min-maps"
               }
             ],
             "styles": [
@@ -42,16 +52,21 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": { "minify": true, "inlineCritical": true },
+                "fonts": { "inline": false }
+              }
             },
             "development": {
               "optimization": false,
@@ -100,5 +115,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "caf2cdcc-8127-47bf-b378-013797efef47"
   }
 }

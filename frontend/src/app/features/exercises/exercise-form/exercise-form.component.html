@@ -1,0 +1,131 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button routerLink="/exercises"><mat-icon>arrow_back</mat-icon></button>
+  <span style="margin-left:8px">{{ editId() ? 'Edit Exercise' : 'New Exercise' }}</span>
+</mat-toolbar>
+
+<div class="container">
+  @if (loading()) {
+    <div class="center"><mat-spinner></mat-spinner></div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()">
+
+      <!-- Basic Info -->
+      <mat-card class="section-card">
+        <mat-card-header><mat-card-title>Exercise Details</mat-card-title></mat-card-header>
+        <mat-card-content>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="e.g. FizzBuzz" />
+            @if (form.controls.title.hasError('required')) {
+              <mat-error>Title is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description / Instructions</mat-label>
+            <textarea matInput formControlName="description" rows="5"
+              placeholder="Describe what the student must implement..."></textarea>
+            @if (form.controls.description.hasError('required')) {
+              <mat-error>Description is required</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="row">
+            <mat-form-field appearance="outline">
+              <mat-label>Language</mat-label>
+              <mat-select formControlName="language" [disabled]="!!editId()">
+                @for (lang of languages; track lang) {
+                  <mat-option [value]="lang">{{ lang }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Stuck threshold (minutes)</mat-label>
+              <input matInput type="number" formControlName="stuckThresholdMinutes" min="1" max="120" />
+              <mat-hint>Mark student as stuck after N minutes without solving</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Boilerplate Code</mat-label>
+            <textarea matInput formControlName="boilerplate" rows="8"
+              style="font-family: monospace; font-size: 13px;"></textarea>
+            <mat-hint>Starting code shown to the student</mat-hint>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Test Cases -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Test Cases</mat-card-title>
+          <mat-card-subtitle>At least one visible test case is required</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+
+          <div formArrayName="testCases">
+            @for (tc of testCases.controls; track $index) {
+              <div [formGroupName]="$index" class="test-case">
+                <div class="test-case-header">
+                  <span>Test #{{ $index + 1 }}</span>
+                  <div class="test-case-actions">
+                    <mat-checkbox formControlName="isHidden">Hidden</mat-checkbox>
+                    <button mat-icon-button type="button" color="warn"
+                      (click)="removeTestCase($index)"
+                      [disabled]="testCases.length === 1">
+                      <mat-icon>remove_circle_outline</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <mat-form-field appearance="outline" class="flex-1">
+                    <mat-label>Input (stdin)</mat-label>
+                    <textarea matInput formControlName="input" rows="3"
+                      style="font-family:monospace;font-size:12px"
+                      placeholder="5"></textarea>
+                    @if (tc.get('input')?.hasError('required')) {
+                      <mat-error>Input is required</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="flex-1">
+                    <mat-label>Expected Output (stdout)</mat-label>
+                    <textarea matInput formControlName="expectedOutput" rows="3"
+                      style="font-family:monospace;font-size:12px"
+                      placeholder="Fizz"></textarea>
+                    @if (tc.get('expectedOutput')?.hasError('required')) {
+                      <mat-error>Expected output is required</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+              </div>
+
+              @if ($index < testCases.length - 1) {
+                <mat-divider style="margin: 8px 0"></mat-divider>
+              }
+            }
+          </div>
+
+          <button mat-stroked-button type="button" (click)="addTestCase()" style="margin-top:12px">
+            <mat-icon>add</mat-icon> Add Test Case
+          </button>
+
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Submit -->
+      <div class="actions">
+        <button mat-stroked-button type="button" routerLink="/exercises">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+          @if (saving()) { <mat-spinner diameter="18" style="display:inline-block"></mat-spinner> }
+          @else { <ng-container><mat-icon>save</mat-icon> {{ editId() ? 'Save Changes' : 'Create Exercise' }}</ng-container> }
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

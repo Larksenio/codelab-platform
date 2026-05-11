@@ -1,0 +1,128 @@
+<mat-toolbar color="primary">
+  <mat-icon>code</mat-icon>
+  <span style="margin-left:8px">CodeLab</span>
+  @if (exercise()) {
+    <span class="lang-chip">{{ exercise()!.language }}</span>
+  }
+</mat-toolbar>
+
+@if (loading()) {
+  <div class="center"><mat-spinner></mat-spinner></div>
+} @else if (error()) {
+  <div class="center error-msg">
+    <mat-icon style="font-size:48px;width:48px;height:48px">error_outline</mat-icon>
+    <p>{{ error() }}</p>
+  </div>
+} @else if (exercise()) {
+  <div class="layout">
+
+    <!-- LEFT: Description + Results + Hint -->
+    <div class="left-panel">
+      <mat-card class="description-card">
+        <mat-card-header>
+          <mat-card-title>{{ exercise()!.title }}</mat-card-title>
+          <mat-card-subtitle>{{ exercise()!.language }} · by {{ exercise()!.instructorName }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="description">{{ exercise()!.description }}</p>
+
+          @if (exercise()!.testCases.length > 0) {
+            <mat-divider style="margin: 16px 0"></mat-divider>
+            <h4>Example Test Cases</h4>
+            @for (tc of exercise()!.testCases; track tc.id) {
+              <div class="test-case-example">
+                <div><span class="label">Input:</span><code>{{ tc.input || 'no input' }}</code></div>
+                <div><span class="label">Expected:</span><code>{{ tc.expectedOutput }}</code></div>
+              </div>
+            }
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Hint Panel -->
+      @if (hint()) {
+        <mat-card class="hint-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar style="color:#f59e0b">lightbulb</mat-icon>
+            <mat-card-title>Hint</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="hint-text">{{ hint() }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Results Panel -->
+      @if (result()) {
+        <mat-card class="results-card" [class.success]="result()!.success" [class.failure]="!result()!.success">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>{{ result()!.success ? 'check_circle' : 'cancel' }}</mat-icon>
+              {{ result()!.passedCount }}/{{ result()!.totalCount }} tests passed
+              <span class="exec-time">{{ result()!.executionMs }} ms</span>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (result()!.errorMessage) {
+              <pre class="error-block">{{ result()!.errorMessage }}</pre>
+            }
+            <div class="test-results">
+              @for (tr of result()!.testResults; track $index) {
+                <div class="test-result-row" [class.passed]="tr.passed" [class.failed]="!tr.passed">
+                  <mat-icon>{{ tr.passed ? 'check' : 'close' }}</mat-icon>
+                  <div class="test-result-details">
+                    <div><span class="label">Input:</span> <code>{{ tr.input || '(empty)' }}</code></div>
+                    <div><span class="label">Expected:</span> <code>{{ tr.expected }}</code></div>
+                    @if (!tr.passed) {
+                      <div><span class="label">Got:</span> <code>{{ tr.actual || '(empty)' }}</code></div>
+                      @if (tr.errorMessage) {
+                        <div><span class="label">Error:</span> <code class="error-text">{{ tr.errorMessage }}</code></div>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <!-- RIGHT: Monaco Editor -->
+    <div class="right-panel">
+      <div class="editor-wrapper">
+        <app-code-editor
+          [language]="language"
+          [value]="code"
+          (valueChange)="onCodeChange($event)">
+        </app-code-editor>
+      </div>
+
+      <div class="submit-bar">
+        <button mat-stroked-button
+          (click)="getHint()"
+          [disabled]="hinting() || !sessionId()"
+          class="hint-btn">
+          @if (hinting()) {
+            <mat-spinner diameter="16" style="display:inline-block;margin-right:6px"></mat-spinner>
+          } @else {
+            <ng-container><mat-icon>lightbulb</mat-icon></ng-container>
+          }
+          Get Hint
+        </button>
+
+        <button mat-raised-button color="primary"
+          (click)="submit()"
+          [disabled]="submitting() || !sessionId()">
+          @if (submitting()) {
+            <mat-spinner diameter="20" style="display:inline-block;margin-right:8px"></mat-spinner>
+            Running tests...
+          } @else {
+            <ng-container><mat-icon>play_arrow</mat-icon> Submit</ng-container>
+          }
+        </button>
+      </div>
+    </div>
+
+  </div>
+}

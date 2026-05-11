@@ -1,0 +1,107 @@
+:host { display: block; }
+
+.center {
+  display: flex; align-items: center; justify-content: center;
+  height: calc(100vh - 64px);
+}
+
+.layout {
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Stat cards */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stat-card mat-card-content {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1976d2;
+  &.accent { color: #2e7d32; }
+}
+
+.stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+
+/* Chart row */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chart-card mat-card-title {
+  display: flex; align-items: center; gap: 8px; font-size: 16px;
+}
+
+.chart-wrapper { height: 240px; padding-top: 12px; }
+
+.no-data { display: flex; align-items: center; justify-content: center; height: 100%; color: #999; }
+
+/* Detail stats */
+.detail-stats { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.stat-key { color: #555; font-size: 14px; }
+.stat-val { font-weight: 600; font-size: 15px; }
+.green { color: #2e7d32; }
+.red   { color: #c62828; }
+
+/* Students table */
+.students-table { width: 100%; }
+
+.risk-row { background: #fff8e1; }
+
+.risk-icon { color: #f59e0b; font-size: 16px; width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; }
+
+.status-chip {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  &.passed  { background: #e8f5e9; color: #2e7d32; }
+  &.failed  { background: #fff3e0; color: #e65100; }
+}
+
+.risk-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+  margin-left: 16px;
+  font-weight: normal;
+}
+
+.risk-dot {
+  width: 12px; height: 12px;
+  background: #fff8e1;
+  border: 1px solid #f59e0b;
+  border-radius: 2px;
+}
+
+.selector-card mat-card-content { padding: 12px 16px !important; }
+
+@media (max-width: 768px) {
+  .charts-row    { grid-template-columns: 1fr; }
+  .stat-cards    { grid-template-columns: repeat(3, 1fr); }
+}

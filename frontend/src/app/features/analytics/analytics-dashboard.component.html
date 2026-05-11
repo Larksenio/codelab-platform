@@ -1,0 +1,214 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button routerLink="/dashboard"><mat-icon>arrow_back</mat-icon></button>
+  <mat-icon style="margin:0 8px">bar_chart</mat-icon>
+  <span>Analytics</span>
+  <span style="flex:1"></span>
+  @if (selectedId()) {
+    <button mat-stroked-button style="color:white;border-color:rgba(255,255,255,.5)" (click)="exportCsv()">
+      <mat-icon>download</mat-icon> Export CSV
+    </button>
+  }
+</mat-toolbar>
+
+@if (loading()) {
+  <div class="center"><mat-spinner></mat-spinner></div>
+} @else {
+
+  <div class="layout">
+
+    <!-- ── Stat Cards ── -->
+    <div class="stat-cards">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-value">{{ overview().length }}</div>
+          <div class="stat-label">Exercises</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-value">{{ totalSessions }}</div>
+          <div class="stat-label">Total Sessions</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-value accent">{{ avgSuccessRate }}</div>
+          <div class="stat-label">Avg Success Rate</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- ── Top Charts Row ── -->
+    <div class="charts-row">
+
+      <!-- Bar: Success by exercise -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>bar_chart</mat-icon> Success Rate by Exercise</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-wrapper">
+          @if (barChart().labels.length > 0) {
+            <app-chart type="bar" [data]="barChart()" [options]="barOptions"></app-chart>
+          } @else {
+            <div class="no-data">No exercises yet</div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Line: Weekly activity -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>show_chart</mat-icon> Weekly Activity</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-wrapper">
+          <app-chart type="line" [data]="lineChart()"></app-chart>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <!-- ── Exercise Selector ── -->
+    <mat-card class="selector-card">
+      <mat-card-content style="display:flex;align-items:center;gap:16px">
+        <mat-icon color="primary">filter_list</mat-icon>
+        <mat-select placeholder="Select an exercise to drill down…"
+          [value]="selectedId()"
+          (selectionChange)="selectExercise($event.value)"
+          style="flex:1">
+          @for (ex of overview(); track ex.exerciseId) {
+            <mat-option [value]="ex.exerciseId">
+              {{ ex.title }} ({{ ex.successRate }}% success · {{ ex.totalSessions }} sessions)
+            </mat-option>
+          }
+        </mat-select>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ── Detail Row (only when exercise selected) ── -->
+    @if (selectedId()) {
+      @if (detailLoading()) {
+        <div class="center" style="height:200px"><mat-spinner diameter="40"></mat-spinner></div>
+      } @else {
+
+        <div class="charts-row">
+
+          <!-- Donut: Error distribution -->
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title><mat-icon>donut_large</mat-icon> Error Distribution</mat-card-title>
+              @if (detail()) {
+                <mat-card-subtitle>
+                  {{ detail()!.title }} · {{ detail()!.totalSessions }} sessions
+                </mat-card-subtitle>
+              }
+            </mat-card-header>
+            <mat-card-content class="chart-wrapper">
+              <app-chart type="doughnut" [data]="donutChart()"></app-chart>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Detail Stats -->
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title><mat-icon>info</mat-icon> Exercise Stats</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              @if (detail()) {
+                <div class="detail-stats">
+                  <div class="stat-row">
+                    <span class="stat-key">Success Rate</span>
+                    <span class="stat-val" [class.green]="detail()!.successRate >= 70" [class.red]="detail()!.successRate < 40">
+                      {{ detail()!.successRate }}%
+                    </span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-key">Avg Execution</span>
+                    <span class="stat-val">{{ detail()!.avgExecutionMs | number:'1.0-0' }} ms</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-key">Avg Attempts (to pass)</span>
+                    <span class="stat-val">{{ detail()!.avgAttemptsToPass }}</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-key">Hints Used</span>
+                    <span class="stat-val">{{ detail()!.hintsUsed }}</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-key">Stuck Students</span>
+                    <span class="stat-val" [class.red]="detail()!.stuckCount > 0">{{ detail()!.stuckCount }}</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-key">Needs Reinforcement</span>
+                    <span class="stat-val" [class.red]="(group()?.needsReinforcementCount ?? 0) > 0">
+                      {{ group()?.needsReinforcementCount ?? '—' }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+
+        <!-- Students Table -->
+        @if (group()) {
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>people</mat-icon> Students — {{ group()!.title }}
+                <span class="risk-legend">
+                  <span class="risk-dot"></span> Needs reinforcement
+                </span>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="tableStudents" class="students-table">
+
+                <ng-container matColumnDef="alias">
+                  <th mat-header-cell *matHeaderCellDef>Student</th>
+                  <td mat-cell *matCellDef="let s">
+                    {{ s.studentAlias || 'Anonymous' }}
+                    @if (s.needsReinforcement) {
+                      <mat-icon class="risk-icon" matTooltip="Needs reinforcement">warning</mat-icon>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="attempts">
+                  <th mat-header-cell *matHeaderCellDef>Attempts</th>
+                  <td mat-cell *matCellDef="let s">{{ s.attempts }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="hints">
+                  <th mat-header-cell *matHeaderCellDef>Hints</th>
+                  <td mat-cell *matCellDef="let s">{{ s.hintsUsed }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let s">
+                    <span class="status-chip" [class.passed]="s.passed" [class.failed]="!s.passed">
+                      {{ s.passed ? 'Passed' : 'In Progress' }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="joined">
+                  <th mat-header-cell *matHeaderCellDef>Joined</th>
+                  <td mat-cell *matCellDef="let s">{{ s.joinedAt | date:'dd/MM HH:mm' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                  [class.risk-row]="row.needsReinforcement"></tr>
+
+              </table>
+            </mat-card-content>
+          </mat-card>
+        }
+
+      }
+    }
+
+  </div>
+}

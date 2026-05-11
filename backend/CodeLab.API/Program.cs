@@ -1,6 +1,7 @@
 using System.Text;
 using System.Threading.RateLimiting;
 using CodeLab.API.Data;
+using CodeLab.API.Hubs;
 using CodeLab.API.Models;
 using CodeLab.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -105,6 +106,12 @@ builder.Services.AddCors(options =>
 
 // ── Application Services ───────────────────────────────────────────────────
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICodeExecutionService, CodeExecutionService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddHttpClient<IAiHintService, AiHintService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 // ── Controllers & Swagger ──────────────────────────────────────────────────
 builder.Services.AddControllers();
@@ -169,7 +176,9 @@ app.UseCors("AllowAngular");
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
 app.MapControllers();
+app.MapHub<ExerciseHub>("/hubs/exercise");
 
 app.Run();
 

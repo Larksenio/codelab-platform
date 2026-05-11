@@ -1,0 +1,48 @@
+.container {
+  max-width: 860px;
+  margin: 32px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-card { padding-bottom: 8px; }
+
+.center { display: flex; justify-content: center; margin-top: 80px; }
+
+.full-width { width: 100%; }
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  mat-form-field { flex: 1; min-width: 200px; }
+}
+
+.flex-1 { flex: 1; min-width: 200px; }
+
+.test-case {
+  margin-bottom: 8px;
+}
+
+.test-case-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.test-case-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: 40px;
+}
