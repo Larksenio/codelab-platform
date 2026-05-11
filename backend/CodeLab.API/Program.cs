@@ -97,6 +97,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:4200",
+                "https://codelab-platform-amber.vercel.app",
                 builder.Configuration["Frontend:Url"] ?? "http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod()
