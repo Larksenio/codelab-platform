@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.codelab.app/api',
+   apiUrl: 'https://codelab-api-xlub.onrender.com/api',
   hubUrl: 'https://api.codelab.app/hubs',
 };
