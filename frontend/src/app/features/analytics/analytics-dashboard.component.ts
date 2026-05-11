@@ -1,9 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,8 +31,8 @@ const PALETTE = {
   selector: 'app-analytics-dashboard',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, RouterLink,
-    MatToolbarModule, MatCardModule, MatButtonModule, MatIconModule,
+    CommonModule, FormsModule,
+    MatCardModule, MatButtonModule, MatIconModule,
     MatSelectModule, MatProgressSpinnerModule, MatTableModule,
     MatTooltipModule, MatDividerModule,
     ChartComponent,

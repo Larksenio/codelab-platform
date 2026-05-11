@@ -22,14 +22,7 @@ export const routes: Routes = [
     ],
   },
 
-  {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-  },
-
-  // Student — public exercise view (no auth, must be BEFORE :id to avoid conflict)
+  // Student editor — no sidebar layout
   {
     path: 'exercises/share/:token',
     loadComponent: () =>
@@ -37,45 +30,58 @@ export const routes: Routes = [
         .then(m => m.EditorPageComponent),
   },
 
-  // Instructor — exercise management
+  // Authenticated shell — sidebar + topbar
   {
-    path: 'exercises',
-    canActivate: [instructorGuard],
+    path: '',
+    canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/exercises/exercise-list/exercise-list.component')
-        .then(m => m.ExerciseListComponent),
-  },
-  {
-    path: 'exercises/new',
-    canActivate: [instructorGuard],
-    loadComponent: () =>
-      import('./features/exercises/exercise-form/exercise-form.component')
-        .then(m => m.ExerciseFormComponent),
-  },
-  {
-    path: 'exercises/:id',
-    canActivate: [instructorGuard],
-    loadComponent: () =>
-      import('./features/exercises/exercise-form/exercise-form.component')
-        .then(m => m.ExerciseFormComponent),
-  },
-
-  // Instructor — analytics dashboard
-  {
-    path: 'analytics',
-    canActivate: [instructorGuard],
-    loadComponent: () =>
-      import('./features/analytics/analytics-dashboard.component')
-        .then(m => m.AnalyticsDashboardComponent),
-  },
-
-  // Instructor — live monitor
-  {
-    path: 'monitor',
-    canActivate: [instructorGuard],
-    loadComponent: () =>
-      import('./features/monitor/monitor-page.component')
-        .then(m => m.MonitorPageComponent),
+      import('./core/layout/main-layout/main-layout.component')
+        .then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      },
+      {
+        path: 'exercises',
+        canActivate: [instructorGuard],
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/exercises/exercise-list/exercise-list.component')
+                .then(m => m.ExerciseListComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import('./features/exercises/exercise-form/exercise-form.component')
+                .then(m => m.ExerciseFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/exercises/exercise-form/exercise-form.component')
+                .then(m => m.ExerciseFormComponent),
+          },
+        ],
+      },
+      {
+        path: 'analytics',
+        canActivate: [instructorGuard],
+        loadComponent: () =>
+          import('./features/analytics/analytics-dashboard.component')
+            .then(m => m.AnalyticsDashboardComponent),
+      },
+      {
+        path: 'monitor',
+        canActivate: [instructorGuard],
+        loadComponent: () =>
+          import('./features/monitor/monitor-page.component')
+            .then(m => m.MonitorPageComponent),
+      },
+    ],
   },
 
   { path: '**', redirectTo: '/dashboard' },

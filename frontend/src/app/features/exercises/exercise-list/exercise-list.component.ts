@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -17,7 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [
     CommonModule, RouterLink,
     MatCardModule, MatButtonModule, MatIconModule,
-    MatToolbarModule, MatChipsModule, MatProgressSpinnerModule, MatSnackBarModule,
+    MatChipsModule, MatProgressSpinnerModule, MatSnackBarModule,
   ],
   templateUrl: './exercise-list.component.html',
   styleUrl: './exercise-list.component.scss',

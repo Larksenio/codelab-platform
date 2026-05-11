@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
@@ -32,7 +31,7 @@ const BOILERPLATES: Record<string, string> = {
     CommonModule, ReactiveFormsModule, RouterLink,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule,
     MatIconModule, MatSelectModule, MatSliderModule, MatCheckboxModule,
-    MatToolbarModule, MatProgressSpinnerModule, MatSnackBarModule, MatDividerModule,
+    MatProgressSpinnerModule, MatSnackBarModule, MatDividerModule,
   ],
   templateUrl: './exercise-form.component.html',
   styleUrl: './exercise-form.component.scss',
